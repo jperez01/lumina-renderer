@@ -10,3 +10,9 @@
 [submodule "ext/tbb"]
 	path = ext/tbb
 	url = https://github.com/oneapi-src/oneTBB.git
+[submodule "tinyformat"]
+	path = tinyformat
+	url = https://github.com/c42f/tinyformat.git
+[submodule "ext/tinyformat"]
+	path = ext/tinyformat
+	url = https://github.com/c42f/tinyformat.git

@@ -24,6 +24,9 @@ set_property(TARGET eigen PROPERTY FOLDER "dependencies")
 add_subdirectory(pugixml)
 set_property(TARGET pugixml PROPERTY FOLDER "dependencies")
 
+add_library(tinyformat INTERFACE tinyformat/tinyformat.h)
+target_include_directories(tinyformat INTERFACE .)
+
 set(GLFW_INCLUDE_DIR
         ${CMAKE_CURRENT_SOURCE_DIR}/nanogui/ext/glfw/include)
 set(GLEW_INCLUDE_DIR
@@ -40,6 +43,8 @@ set(TBB_INCLUDE_DIR
         ${CMAKE_CURRENT_SOURCE_DIR}/tbb/include)
 set(PUGIXML_INCLUDE_DIR
         ${CMAKE_CURRENT_SOURCE_DIR}/pugixml/src)
+set(TINY_INCLUDE_DIR
+        ${CMAKE_CURRENT_SOURCE_DIR}/tinyformat)
 
 set(CompilerFlags
         GLFW_INCLUDE_DIR GLEW_INCLUDE_DIR NANOVG_INCLUDE_DIR STB_IMAGE_WRITE_INCLUDE_DIR

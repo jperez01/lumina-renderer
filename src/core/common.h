@@ -11,6 +11,8 @@
 #include <OpenEXRCore/openexr_version.h>
 #include <tbb/task.h>
 #include <Eigen/Core>
+#include <tinyformat/tinyformat.h>
+#include "utils/resolver.h"
 
 #define LUMINA_NAMESPACE_BEGIN namespace lumina {
 #define LUMINA_NAMESPACE_END }
@@ -75,11 +77,94 @@ typedef TBoundingBox<Point4i>   BoundingBox4i;
 typedef TRay<Point2f, Vector2f> Ray2f;
 typedef TRay<Point3f, Vector3f> Ray3f;
 
+class Mesh;
+
+typedef Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> MatrixXf;
+typedef Eigen::Matrix<uint32_t, Eigen::Dynamic, Eigen::Dynamic> MatrixXu;
+
+enum EMeasure {
+    EUnknownMeasure = 0,
+    ESolidAngle,
+    EDiscrete
+};
+
+class LuminaException : public std::runtime_error {
+public:
+    template <typename... Args> LuminaException(const char* fmt, const Args&... args)
+    : std::runtime_error(tfm::format(fmt, args...)) {}
+};
+
 bool toBool(const std::string &str);
 int toInt(const std::string& str);
 unsigned int toUInt(const std::string& str);
 float toFloat(const std::string& str);
 Eigen::Vector3f toVector3f(const std::string& str);
+
+std::string indent(const std::string &string, int amount = 2) {
+    /* This could probably be done faster (it's not
+       really speed-critical though) */
+    std::istringstream iss(string);
+    std::ostringstream oss;
+    std::string spacer(amount, ' ');
+    bool firstLine = true;
+    for (std::string line; std::getline(iss, line); ) {
+        if (!firstLine)
+            oss << spacer;
+        oss << line;
+        if (!iss.eof())
+            oss << std::endl;
+        firstLine = false;
+    }
+    return oss.str();
+}
+
+std::string timeString(double time, bool precise = false) {
+    if (std::isnan(time) || std::isinf(time))
+        return "inf";
+
+    std::string suffix = "ms";
+    if (time > 1000) {
+        time /= 1000; suffix = "s";
+        if (time > 60) {
+            time /= 60; suffix = "m";
+            if (time > 60) {
+                time /= 60; suffix = "h";
+                if (time > 12) {
+                    time /= 12; suffix = "d";
+                }
+            }
+        }
+    }
+
+    std::ostringstream os;
+    os << std::setprecision(precise ? 4 : 1)
+       << std::fixed << time << suffix;
+
+    return os.str();
+}
+
+std::string memString(size_t size, bool precise = false) {
+    double value = (double) size;
+    const char *suffixes[] = {
+            "B", "KiB", "MiB", "GiB", "TiB", "PiB"
+    };
+    int suffix = 0;
+    while (suffix < 5 && value > 1024.0f) {
+        value /= 1024.0f; ++suffix;
+    }
+
+    std::ostringstream os;
+    os << std::setprecision(suffix == 0 ? 0 : (precise ? 4 : 1))
+       << std::fixed << value << " " << suffixes[suffix];
+
+    return os.str();
+}
+
+Resolver* getFileResolver() {
+    static Resolver* resolver = new Resolver();
+
+    return resolver;
+}
 
 std::vector<std::string> tokenize(const std::string& s, const std::string& delim = ", ", bool includeEmpty = false);
 
