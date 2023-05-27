@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "core/vector.h"
+#include "vector.h"
 
 LUMINA_NAMESPACE_BEGIN
 

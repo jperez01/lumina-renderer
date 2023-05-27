@@ -14,7 +14,9 @@ public:
 
 protected:
     struct OBJVertex {
-        uint32_t p = (uint32_t) -1, n = (uint32_t) - 1, uv = (uint32_t) - 1;
+        uint32_t p = (uint32_t) -1;
+        uint32_t n = (uint32_t) -1;
+        uint32_t uv = (uint32_t) -1;
 
         inline OBJVertex() {}
 
@@ -26,10 +28,10 @@ protected:
 
             p = toUInt(tokens[0]);
             if (tokens.size() >= 2 && !tokens[1].empty())
-                n = toUInt(tokens[1]);
+                uv = toUInt(tokens[1]);
 
             if (tokens.size() >= 3 && !tokens[2].empty())
-                uv = toUInt(tokens[2]);
+                n = toUInt(tokens[2]);
         }
 
         inline bool operator==(const OBJVertex &v) const {

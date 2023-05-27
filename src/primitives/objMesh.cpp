@@ -3,6 +3,7 @@
 //
 
 #include <fstream>
+#include <sstream>
 #include "objMesh.h"
 #include "utils/timer.h"
 
@@ -23,7 +24,8 @@ WavefrontObj::WavefrontObj(const lumina::PropertyList &propsList) {
     std::cout.flush();
     Timer timer;
 
-    std::vector<Vector3f> positions, normals;
+    std::vector<Vector3f> positions;
+    std::vector<Vector3f> normals;
     std::vector<Vector2f> texCoords;
     std::vector<uint32_t> indices;
     std::vector<OBJVertex> vertices;
@@ -92,15 +94,15 @@ WavefrontObj::WavefrontObj(const lumina::PropertyList &propsList) {
     }
 
     if (!normals.empty()) {
-        m_normals.resize(3, normals.size());
-        for (uint32_t i = 0; i < normals.size(); i++) {
-            m_vertices.col(i) = normals.at(vertices[i].n - 1);
+        m_normals.resize(3, vertices.size());
+        for (uint32_t i=0; i<vertices.size(); ++i) {
+            m_normals.col(i) = normals.at(vertices[i].n-1);
         }
     }
 
     if (!texCoords.empty()) {
-        m_uvs.resize(3, texCoords.size());
-        for (uint32_t i = 0; i < texCoords.size(); i++) {
+        m_uvs.resize(2, vertices.size());
+        for (uint32_t i = 0; i < vertices.size(); i++) {
             m_uvs.col(i) = texCoords.at(vertices[i].uv - 1);
         }
     }

@@ -5,9 +5,7 @@
 #include "parser.h"
 #include "Eigen/Geometry"
 
-#include <pugixml.hpp>
 #include <fstream>
-#include <set>
 
 LUMINA_NAMESPACE_BEGIN
 
@@ -161,7 +159,7 @@ LuminaObject* loadXMLFile(std::string &filename) {
 
         for (pugi::xml_node& child : node.children()) {
             LuminaObject* childObject = parseTag(child, propList, tag);
-            if (child)
+            if (childObject)
                 children.push_back(childObject);
         }
 

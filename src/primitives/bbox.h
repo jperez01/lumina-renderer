@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "core/ray.h"
+#include "ray.h"
 #include "core/common.h"
 
 LUMINA_NAMESPACE_BEGIN
@@ -13,7 +13,8 @@ template <typename PointType> struct TBoundingBox {
     typedef typename PointType::Scalar Scalar;
     typedef typename PointType::VectorType VectorType;
 
-    PointType max, min;
+    PointType min; ///< Component-wise minimum
+    PointType max;
 
     enum {
         Dimension = PointType::Dimension

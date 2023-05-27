@@ -4,16 +4,21 @@
 
 #pragma once
 #include "core/object.h"
+#include "image/rfilter.h"
 
 LUMINA_NAMESPACE_BEGIN
 
 class Camera : public LuminaObject {
 public:
+    virtual Color3f sampleRay(Ray3f& ray, const Point2f& samplePosition,
+                              const Point2f& apertureSample) const = 0;
+    const ReconstructionFilter* getReconstructionFilter() const { return m_filter; }
     const Vector2i &getOutputSize() const { return m_outputSize; }
     EClassType getClassType() const { return ECamera; }
 
 protected:
     Vector2i m_outputSize;
+    ReconstructionFilter* m_filter;
 };
 
 class PerspectiveCamera : public Camera {

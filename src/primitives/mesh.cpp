@@ -30,7 +30,7 @@ float Mesh::surfaceArea(uint32_t index) const {
     return 0.5f * Vector3f((p1 - p0).cross(p2 - p0)).norm();
 }
 
-bool Mesh::rayIntersect(uint32_t index, const Ray3f &ray, float &u, float &v) const {
+bool Mesh::rayIntersect(uint32_t index, const Ray3f &ray, float &u, float &v, float& t) const {
     uint32_t i0 = m_faces(0, index), i1 = m_faces(1, index),
         i2 = m_faces(2, index);
     Point3f p0 = m_vertices.col(i0), p1 = m_vertices.col(i1), p2 = m_vertices.col(i2);
@@ -39,7 +39,7 @@ bool Mesh::rayIntersect(uint32_t index, const Ray3f &ray, float &u, float &v) co
     Vector3f pvec = ray.d.cross(edge2);
 
     float det = edge1.dot(pvec);
-    if (det > -Epsilon && det < Epsilon)
+    if (det > -1e-8f && det < 1e-8f)
         return false;
     float invDet = 1 / det;
 
@@ -57,7 +57,7 @@ bool Mesh::rayIntersect(uint32_t index, const Ray3f &ray, float &u, float &v) co
     if (v < 0.0f || v + u > 1.0f)
         return false;
 
-    float t = edge2.dot(qvec) * invDet;
+    t = edge2.dot(qvec) * invDet;
 
     return t >= ray.mint && t <= ray.maxt;
 }
@@ -94,7 +94,7 @@ void Mesh::addChild(LuminaObject *child) {
             if (m_emitter)
                 throw LuminaException("Already have an emitter specified.");
 
-            m_emitter = dynamic_cast<Emitter *>(child);
+            m_emitter = static_cast<Emitter *>(child);
             }
             break;
         default:

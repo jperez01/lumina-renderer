@@ -1,4 +1,9 @@
 # Build Thread Building Blocks Library
+set(TBB_BUILD_SHARED          OFF  CACHE BOOL " " FORCE)
+set(TBB_BUILD_STATIC          ON   CACHE BOOL " " FORCE)
+set(TBB_BUILD_TBBMALLOC       OFF  CACHE BOOL " " FORCE)
+set(TBB_BUILD_TBBMALLOC_PROXY OFF  CACHE BOOL " " FORCE)
+set(TBB_BUILD_TESTS           OFF  CACHE BOOL " " FORCE)
 add_subdirectory(tbb)
 set_property(TARGET tbb PROPERTY FOLDER "dependencies")
 
@@ -26,6 +31,9 @@ set_property(TARGET pugixml PROPERTY FOLDER "dependencies")
 
 add_library(tinyformat INTERFACE tinyformat/tinyformat.h)
 target_include_directories(tinyformat INTERFACE .)
+
+add_library(pcg32 INTERFACE pcg32/pcg32.h)
+target_include_directories(pcg32 INTERFACE .)
 
 set(GLFW_INCLUDE_DIR
         ${CMAKE_CURRENT_SOURCE_DIR}/nanogui/ext/glfw/include)

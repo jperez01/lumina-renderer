@@ -3,7 +3,7 @@
 //
 
 #include "warp.h"
-#include "core/vector.h"
+#include "primitives/vector.h"
 
 LUMINA_NAMESPACE_BEGIN
 

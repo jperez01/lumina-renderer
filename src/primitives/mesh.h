@@ -65,7 +65,7 @@ public:
     //// Return the centroid of the given triangle
     Point3f getCentroid(uint32_t index) const;
 
-    bool rayIntersect(uint32_t index, const Ray3f& ray, float& u, float& v) const;
+    bool rayIntersect(uint32_t index, const Ray3f& ray, float& u, float& v, float& t) const;
 
     /// Return a pointer to the vertex positions
     const MatrixXf &getVertexPositions() const { return m_vertices; }

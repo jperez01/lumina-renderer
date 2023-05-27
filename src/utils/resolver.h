@@ -36,8 +36,11 @@ public:
     path resolve(const path &value) const {
         for (const_iterator it = m_paths.begin(); it != m_paths.end(); ++it) {
             path combined = *it / value;
-            if (exists(combined))
+
+            if (exists(combined)) {
+
                 return combined;
+            }
         }
         return value;
     }

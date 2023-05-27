@@ -13,18 +13,50 @@ add_executable(path_renderer
         src/core/propsList.h
         src/core/propsList.cpp
         src/core/color.h
-        src/core/transform.h
-        src/core/vector.h
-        src/core/ray.h
+        src/primitives/transform.h
+        src/primitives/vector.h
+        src/primitives/ray.h
 
         src/utils/parser.h
         src/utils/parser.cpp
+        src/utils/warp.h
+        src/utils/warp.cpp
+        src/utils/resolver.h
+        src/utils/timer.h
+        src/utils/sampler.h
+        src/utils/sampler.cpp
 
         src/scene/camera.h
         src/scene/camera.cpp
         src/scene/scene.h
         src/scene/scene.cpp
-        src/primitives/frame.h src/primitives/mesh.h src/primitives/mesh.cpp src/primitives/bbox.h src/primitives/emitter.h src/bsdfs/bsdf.h src/bsdfs/diffuse.h src/bsdfs/diffuse.cpp src/utils/warp.h src/utils/warp.cpp src/primitives/objMesh.h src/primitives/objMesh.cpp src/utils/resolver.h src/utils/timer.h)
+        src/scene/accel.h
+        src/scene/accel.cpp
+
+        src/primitives/frame.h
+        src/primitives/mesh.h
+        src/primitives/mesh.cpp
+        src/primitives/bbox.h
+        src/primitives/emitter.h
+        src/primitives/objMesh.h
+        src/primitives/objMesh.cpp
+
+        src/bsdfs/bsdf.h
+        src/bsdfs/diffuse.h
+        src/bsdfs/diffuse.cpp
+
+        src/image/block.h
+        src/image/block.cpp
+        src/image/rfilter.h
+        src/image/bitmap.h
+        src/image/bitmap.cpp
+        src/image/gui.h
+        src/image/gui.cpp
+
+        src/integrators/integrator.h
+        src/integrators/normals.h
+        src/integrators/normals.cpp
+        src/core/color.cpp src/image/rfilter.cpp)
 
 target_include_directories(path_renderer PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
@@ -43,5 +75,5 @@ foreach(dir ${dirs})
     message(STATUS "dir='${dir}'")
 endforeach()
 
-target_link_libraries(path_renderer PUBLIC tbb tinyformat pugixml nanogui eigen ${NANOGUI_EXTRA_LIBS} OpenEXR::OpenEXR)
+target_link_libraries(path_renderer PUBLIC tbb pcg32 tinyformat pugixml nanogui eigen ${NANOGUI_EXTRA_LIBS} OpenEXR::OpenEXR)
 target_compile_features(path_renderer PRIVATE cxx_std_17)
