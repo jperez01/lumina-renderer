@@ -7,8 +7,9 @@
 #include "primitives/frame.h"
 #include "core/object.h"
 #include "bbox.h"
-#include "emitter.h"
+#include "lights/emitter.h"
 #include "bsdfs/bsdf.h"
+#include "utils/dpdf.h"
 
 LUMINA_NAMESPACE_BEGIN
 
@@ -67,6 +68,9 @@ public:
 
     bool rayIntersect(uint32_t index, const Ray3f& ray, float& u, float& v, float& t) const;
 
+    void samplePosition(const Point2f& sample, Point3f& p, Normal3f& n) const;
+    float pdf() const;
+
     /// Return a pointer to the vertex positions
     const MatrixXf &getVertexPositions() const { return m_vertices; }
 
@@ -118,6 +122,7 @@ protected:
     BSDF* m_bsdf = nullptr;
     Emitter* m_emitter = nullptr;
     BoundingBox3f m_bbox;
+    DiscretePDF m_pdf;
 };
 
 LUMINA_NAMESPACE_END

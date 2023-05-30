@@ -2,25 +2,28 @@
 // Created by juperez on 5/26/23.
 //
 
-#include "normals.h"
+#include "integrator.h"
 
 LUMINA_NAMESPACE_BEGIN
 
-NormalIntegrator::NormalIntegrator(const PropertyList& propsList) {}
+class NormalIntegrator : public Integrator {
+public:
+    NormalIntegrator(const PropertyList& propsList) {}
 
-Color3f NormalIntegrator::Li(const Scene* scene, Sampler* sampler, const Ray3f& ray) const {
-    Intersection its;
-    if (!scene->rayIntersect(ray, its))
-        return Color3f(0.0f);
+    Color3f Li(const Scene* scene, Sampler* sampler, const Ray3f& ray) const {
+        Intersection its;
+        if (!scene->rayIntersect(ray, its))
+            return Color3f(0.0f);
 
-    Normal3f normal = its.shadingFrame.n.cwiseAbs();
+        Normal3f normal = its.shadingFrame.n.cwiseAbs();
 
-    return Color3f(normal.x(), normal.y(), normal.z());
-}
+        return Color3f(normal.x(), normal.y(), normal.z());
+    }
 
-std::string NormalIntegrator::toString() const {
-    return "NormalIntegrator[]";
-}
+    std::string toString() const {
+        return "NormalIntegrator[]";
+    }
+};
 
 LUMINA_REGISTER_CLASS(NormalIntegrator, "normals")
 LUMINA_NAMESPACE_END

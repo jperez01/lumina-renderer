@@ -71,7 +71,7 @@ PerspectiveCamera::PerspectiveCamera(const PropertyList& propsList) {
         float invZ = 1.0f / d.z();
 
         ray.o = m_cameraToWorld * Point3f(0, 0, 0);
-        ray.d = m_cameraToWorld * d;
+        ray.d = (m_cameraToWorld * d).normalized();
         ray.mint = m_nearClip * invZ;
         ray.maxt = m_farClip * invZ;
         ray.update();

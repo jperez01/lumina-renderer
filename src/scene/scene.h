@@ -6,7 +6,7 @@
 
 #include "core/object.h"
 #include "camera.h"
-#include "primitives/emitter.h"
+#include "lights/emitter.h"
 #include "accel.h"
 #include "utils/sampler.h"
 #include "integrators/integrator.h"
@@ -45,6 +45,8 @@ public:
 
     bool rayIntersect(const Ray3f& ray, Intersection& its) const;
     bool rayIntersect(const Ray3f& ray) const;
+
+    Emitter* sampleLight(float sample, float& pdf) const;
 
     /// \brief Return an axis-aligned box that bounds the scene
     const BoundingBox3f &getBoundingBox() const {

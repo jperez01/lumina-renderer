@@ -13,6 +13,8 @@ add_executable(path_renderer
         src/core/propsList.h
         src/core/propsList.cpp
         src/core/color.h
+        src/core/color.cpp
+
         src/primitives/transform.h
         src/primitives/vector.h
         src/primitives/ray.h
@@ -25,6 +27,7 @@ add_executable(path_renderer
         src/utils/timer.h
         src/utils/sampler.h
         src/utils/sampler.cpp
+        src/utils/dpdf.h
 
         src/scene/camera.h
         src/scene/camera.cpp
@@ -37,13 +40,17 @@ add_executable(path_renderer
         src/primitives/mesh.h
         src/primitives/mesh.cpp
         src/primitives/bbox.h
-        src/primitives/emitter.h
         src/primitives/objMesh.h
         src/primitives/objMesh.cpp
 
+        src/lights/emitter.h
+        src/lights/areaLight.h
+        src/lights/areaLight.cpp
+
         src/bsdfs/bsdf.h
-        src/bsdfs/diffuse.h
         src/bsdfs/diffuse.cpp
+        src/bsdfs/dielectric.cpp
+        src/bsdfs/mirror.cpp
 
         src/image/block.h
         src/image/block.cpp
@@ -52,11 +59,15 @@ add_executable(path_renderer
         src/image/bitmap.cpp
         src/image/gui.h
         src/image/gui.cpp
+        src/image/rfilter.cpp
 
         src/integrators/integrator.h
-        src/integrators/normals.h
         src/integrators/normals.cpp
-        src/core/color.cpp src/image/rfilter.cpp)
+        src/integrators/pathEms.cpp
+        src/integrators/pathMis.cpp
+        src/integrators/distributed.cpp
+        src/integrators/pathMats.cpp
+        )
 
 target_include_directories(path_renderer PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include

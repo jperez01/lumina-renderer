@@ -24,4 +24,15 @@ float Warp::squareToCosineHemispherePdf(const Vector3f &v) {
         return 0.0f;
 }
 
+Vector3f Warp::squareToTriangle(const Point2f &sample) {
+    float root = std::sqrt(1 - sample.x());
+    float b1 = 1.0f - root, b2 = sample.y() * root;
+
+    return Vector3f(b1, b2, 1 - b2 - b1);
+}
+
+float Warp::squareToTrianglePdf(const Vector3f &v) {
+    return 0;
+}
+
 LUMINA_NAMESPACE_END

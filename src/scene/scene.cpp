@@ -42,12 +42,14 @@ void Scene::addChild(LuminaObject *obj) {
             Mesh* mesh = dynamic_cast<Mesh*>(obj);
             m_accel->addMesh(mesh);
             m_meshes.push_back(mesh);
-
+            if (mesh->isEmitter())
+                m_emitters.push_back(mesh->getEmitter());
         }
         break;
 
         case EEmitter: {
-
+            Emitter* emitter = dynamic_cast<Emitter*>(obj);
+            m_emitters.push_back(emitter);
         }
         break;
 
@@ -112,5 +114,12 @@ bool Scene::rayIntersect(const Ray3f &ray) const {
     return m_accel->rayIntersect(ray, its, true);
 }
 
-LUMINA_REGISTER_CLASS(Scene, "scene")
+Emitter *Scene::sampleLight(float sample, float& pdf) const {
+    int index = (int) (sample * m_emitters.size());
+
+    pdf = 1.0f / m_emitters.size();
+    return m_emitters[index];
+}
+
+    LUMINA_REGISTER_CLASS(Scene, "scene")
 LUMINA_NAMESPACE_END

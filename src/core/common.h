@@ -132,6 +132,7 @@ inline float degToRad(float value) { return value * (M_PI / 180.0f); }
 std::string toLower(const std::string &value);
 
 bool endsWith(const std::string &value, const std::string &ending);
+float fresnel(float cosThetaI, float extIOR, float intIOR);
 
 LUMINA_NAMESPACE_END
 

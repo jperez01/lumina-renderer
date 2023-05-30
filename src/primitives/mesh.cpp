@@ -3,6 +3,7 @@
 //
 
 #include "mesh.h"
+#include "utils/warp.h"
 #include <Eigen/Geometry>
 
 LUMINA_NAMESPACE_BEGIN
@@ -20,6 +21,12 @@ void Mesh::activate() {
             LuminaObjectFactory::createInstance("diffuse", PropertyList())
             );
     }
+    uint32_t triangleCount = getTriangleCount();
+    m_pdf.reserve(triangleCount);
+    for (uint32_t i = 0; i < triangleCount; i++) {
+        m_pdf.append(surfaceArea(i));
+    }
+    m_pdf.normalize();
 }
 
 float Mesh::surfaceArea(uint32_t index) const {
@@ -120,7 +127,30 @@ std::string Mesh::toString() const {
     );
 }
 
-std::string Intersection::toString() const {
+    void Mesh::samplePosition(const Point2f &sample, Point3f &p, Normal3f &n) const {
+        uint32_t index = m_pdf.sample(sample[0]);
+
+        uint32_t i0 = m_faces(0, index), i1 = m_faces(1, index),
+                i2 = m_faces(2, index);
+        Point3f p0 = m_vertices.col(i0), p1 = m_vertices.col(i1), p2 = m_vertices.col(i2);
+
+        Vector3f baryCoords = Warp::squareToTriangle(sample);
+
+        p = p0 * baryCoords.x() + p1 * baryCoords.y() + p2 * baryCoords.z();
+
+        if (m_normals.size() > 0) {
+            Normal3f n0 = m_normals.col(i0), n1 = m_normals.col(i1), n2 = m_normals.col(i2);
+            n = n0 * baryCoords.x() + n1 * baryCoords.y() + n2 * baryCoords.z();
+        } else {
+            n = ((p1 - p0).cross(p2 - p0)).normalized();
+        }
+    }
+
+    float Mesh::pdf() const {
+        return 1.0f / m_pdf.getSum();
+    }
+
+    std::string Intersection::toString() const {
     if (!mesh)
         return "Intersection[invalid]";
 
