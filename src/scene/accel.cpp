@@ -8,6 +8,8 @@
 #include <tbb/blocked_range.h>
 #include <tbb/task_arena.h>
 #include <Eigen/Geometry>
+#include <stack>
+#include <queue>
 
 LUMINA_NAMESPACE_BEGIN
 
@@ -37,7 +39,7 @@ LUMINA_NAMESPACE_BEGIN
 
         m_root = build(m_bbox, triangles, mesh_indices);
 
-
+        flattenTree();
     }
 
     bool Accel::rayIntersect(const Ray3f &ray_, Intersection &its, bool shadowRay) const {
@@ -46,7 +48,8 @@ LUMINA_NAMESPACE_BEGIN
 
         Ray3f ray(ray_); /// Make a copy of the ray (we will need to update its '.maxt' value)
         /* Brute force search through all triangles */
-        foundIntersection = intersectRecursive(*m_root, ray, its, shadowRay, f);
+         foundIntersection = intersectRecursive(*m_root, ray, its, shadowRay, f);
+        // foundIntersection = intersectIterative(ray, its, shadowRay, f);
         if (shadowRay)
             return foundIntersection;
 
@@ -106,6 +109,57 @@ LUMINA_NAMESPACE_BEGIN
         return foundIntersection;
     }
 
+    bool Accel::intersectIterative(Ray3f& ray, Intersection& its, bool shadowRay, uint32_t& hit_index) const
+    {
+        bool foundIntersection = false;
+        std::stack<Node*> queue;
+        queue.push(m_root);
+
+        while (!queue.empty()) {
+            Node currentNode = *queue.top();
+            queue.pop();
+
+            if (currentNode.box.rayIntersect(ray)) {
+                for (uint32_t i = 0; i < currentNode.triangle_indices.size(); i++) {
+                    uint32_t triangle_index = currentNode.triangle_indices[i];
+                    uint32_t mesh_index = currentNode.mesh_indices[i];
+
+                    float u, v, t;
+                    if (m_meshes[mesh_index]->rayIntersect(triangle_index, ray, u, v, t) && t < ray.maxt) {
+                        if (shadowRay)
+                            return true;
+
+                        ray.maxt = its.t = t;
+                        its.uv = Point2f(u, v);
+                        its.mesh = m_meshes[mesh_index];
+                        hit_index = triangle_index;
+                        foundIntersection = true;
+                    }
+                }
+                if (foundIntersection && shadowRay)
+                    return true;
+
+                if (!currentNode.children.empty()) {
+                    std::vector<std::pair<Node*, float>> sortedNodes(currentNode.children.size());
+                    for (uint32_t i = 0; i < currentNode.children.size(); i++) {
+                        auto& child = currentNode.children.at(i);
+                        sortedNodes[i] = std::pair<Node*, float>(child, child->box.distanceTo(ray.o));
+                    }
+                    std::sort(sortedNodes.begin(), sortedNodes.end(), [](const std::pair<Node*, float>& a,
+                        const std::pair<Node*, float>& b) {
+                            return a.second > b.second;
+                        });
+
+                    for (auto& pair : sortedNodes) {
+                        queue.push(pair.first);
+                    }
+                }
+            }
+        }
+
+        return foundIntersection;
+    }
+
     bool Accel::intersectRecursive(const Node &node, Ray3f &ray, Intersection &its, bool shadowRay,
                                    uint32_t &hit_idx) const {
         bool foundIntersection = false;
@@ -155,6 +209,7 @@ LUMINA_NAMESPACE_BEGIN
         if (triangle_indices.empty())
             return nullptr;
 
+        amount++;
         if (triangle_indices.size() < MAX_TRIANGLES_PER_NODE || recursive_depth > MAX_RECURSIVE_DEPTH) {
             Node* newNode = new Node();
             newNode->triangle_indices = std::vector<uint32_t>(triangle_indices);
@@ -205,6 +260,38 @@ LUMINA_NAMESPACE_BEGIN
         }
 
         return parent;
+    }
+
+    void Accel::flattenTree()
+    {
+        std::queue<Node*> queue;
+        queue.push(m_root);
+        int index = 0;
+
+        m_flattenedNodes.resize(1);
+
+        while (!queue.empty()) {
+            Node* current = queue.front();
+            FlatNode& currentFlat = m_flattenedNodes.at(index);
+            uint32_t childrenSize = current->children.size();
+
+            currentFlat.box = current->box;
+            currentFlat.mesh_indices = current->mesh_indices;
+            currentFlat.triangle_indices = current->triangle_indices;
+            currentFlat.childIndexStart = m_flattenedNodes.size();
+            currentFlat.childSize = childrenSize;
+
+            for (int i = 0; i < childrenSize; i++) {
+                queue.push(current->children.at(i));
+            }
+            if (childrenSize > 0)
+                m_flattenedNodes.resize(m_flattenedNodes.size() + current->children.size());
+
+            queue.pop();
+            index++;
+        }
+
+
     }
 
     std::vector<BoundingBox3f> subdivideBox(BoundingBox3f &parent) {

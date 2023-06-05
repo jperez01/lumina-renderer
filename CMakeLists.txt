@@ -25,8 +25,8 @@ add_executable(path_renderer
         src/utils/warp.cpp
         src/utils/resolver.h
         src/utils/timer.h
-        src/utils/sampler.h
-        src/utils/sampler.cpp
+        "src/utils/sampler.h"
+        "src/utils/sampler.cpp"
         src/utils/dpdf.h
 
         src/scene/camera.h

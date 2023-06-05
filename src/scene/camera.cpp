@@ -81,7 +81,10 @@ PerspectiveCamera::PerspectiveCamera(const PropertyList& propsList) {
 
 void PerspectiveCamera::addChild(LuminaObject *obj) {
     if (obj->getClassType() == EReconstructionFilter) {
+        if (m_filter)
+            throw LuminaException("Filter is already defined.");
 
+        m_filter = dynamic_cast<ReconstructionFilter*>(obj);
     } else {
         throw LuminaException("Camera::addChild(<%s>) is not supported!",
                               classTypeName(obj->getClassType()));
