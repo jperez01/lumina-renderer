@@ -14,6 +14,16 @@
 		<integer name="width" value="800"/>
 	</camera>
 
+	<emitter type="pointLight">
+		<color name="radiance" value="5.0 2.5 5.0"/>
+		<point name="position" value="0.230000 0.580000 -0.220000" />
+	</emitter>
+
+	<emitter type="directionalLight">
+		<color name="radiance" value="0.0 0.0 5.0"/>
+		<vector name="direction" value="0.0 -1.0 -1.0" />
+	</emitter>
+
 	<sampler type="independent">
 		<integer name="sampleCount" value="512"/>
 	</sampler>
@@ -43,15 +53,47 @@
 	</mesh>
 
 	<mesh type="obj">
-		<string name="filename" value="meshes/sphere1.obj"/>
+		<string name="filename" value="meshes/sphere1_.obj"/>
 
-		<bsdf type="mirror"/>
+		<bsdf type="microfacet">
+			<float name="intIOR" value="1.7"/>
+			<color name="kd" value="0.2 0.2 0.4"/>
+			<float name="alpha" value="0.28"/>
+
+			<texture type="colorTexture">
+				<string name="filename" value="./albedoTexture.png"/>
+				<string name="type" value="albedo"/>
+				<boolean name="doTrilinear" value="true" />
+				<boolean name="gamma" value="false" />
+				<float name="maxAniso" value="1.0"/>
+				<float name="scale" value="1.0"/>
+			</texture>
+			<texture type="floatTexture">
+				<string name="filename" value="./metallicTexture.png"/>
+				<string name="type" value="metallic"/>
+				<boolean name="doTrilinear" value="true" />
+				<boolean name="gamma" value="false" />
+				<float name="maxAniso" value="1.0"/>
+				<float name="scale" value="1.0"/>
+			</texture>
+			<texture type="floatTexture">
+				<string name="filename" value="./roughnessTexture.png"/>
+				<string name="type" value="roughness"/>
+				<boolean name="doTrilinear" value="true" />
+				<boolean name="gamma" value="false" />
+				<float name="maxAniso" value="1.0"/>
+				<float name="scale" value="1.0"/>
+			</texture>
+		</bsdf>
 	</mesh>
 
 	<mesh type="obj">
 		<string name="filename" value="meshes/sphere2.obj"/>
 
-		<bsdf type="dielectric"/>
+		<bsdf type="dielectric">
+			<float name="intIOR" value="1.333" />
+			<float name="extIOR" value="1.00" />
+		</bsdf>
 	</mesh>
 
 	<mesh type="obj">

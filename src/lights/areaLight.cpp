@@ -19,12 +19,22 @@ Color3f AreaLight::sample(EmitterQueryRecord &record, const Point2f &sample) con
     record.pdf = pdf();
 
     float distance = record.oToP.dot(record.oToP);
-    float numerator = abs(record.refNormal.dot(-record.wi)) * abs(record.n.dot(record.wi));
+    float numerator = abs(record.refNormal.dot(record.wi)) * abs(record.n.dot(-record.wi));
+
+    if (distance == 0.0f || record.pdf == 0.0f) {
+        record.pdf = 0.0f;
+        return Color3f(0.0f);
+    }
 
     return eval(record) * numerator / distance;
 }
 
 float AreaLight::pdf() const {
+    /*
+    * // Convert light sample weight to solid angle measure
+    Float pdf = DistanceSquared(ref.p, isectLight.p) /
+                (AbsDot(isectLight.n, -wi) * Area());
+    */
     return m_mesh->pdf();
 }
 

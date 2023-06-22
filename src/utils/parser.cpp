@@ -65,6 +65,7 @@ LuminaObject* loadXMLFile(std::string &filename) {
         ESampler = LuminaObject::ESampler,
         ETest = LuminaObject::ETest,
         EReconstructionFilter = LuminaObject::EReconstructionFilter,
+        ETexture = LuminaObject::ETexture,
 
         EBoolean = LuminaObject::EClassTypeCount,
         EInteger,
@@ -94,6 +95,7 @@ LuminaObject* loadXMLFile(std::string &filename) {
     tags["integrator"] = EIntegrator;
     tags["sampler"]    = ESampler;
     tags["rfilter"]    = EReconstructionFilter;
+    tags["texture"]    = ETexture;
     tags["test"]       = ETest;
     tags["boolean"]    = EBoolean;
     tags["integer"]    = EInteger;

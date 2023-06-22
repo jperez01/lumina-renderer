@@ -14,6 +14,8 @@ add_executable(path_renderer
         src/core/propsList.cpp
         src/core/color.h
         src/core/color.cpp
+        "src/core/memory.h" 
+        "src/core/memory.cpp"
 
         src/primitives/transform.h
         src/primitives/vector.h
@@ -28,6 +30,8 @@ add_executable(path_renderer
         "src/utils/sampler.h"
         "src/utils/sampler.cpp"
         src/utils/dpdf.h
+        "src/utils/imageIo.h" 
+        "src/utils/imageIo.cpp"
 
         src/scene/camera.h
         src/scene/camera.cpp
@@ -51,6 +55,7 @@ add_executable(path_renderer
         src/bsdfs/diffuse.cpp
         src/bsdfs/dielectric.cpp
         src/bsdfs/mirror.cpp
+        src/bsdfs/microfacet.cpp
 
         src/image/block.h
         src/image/block.cpp
@@ -67,7 +72,13 @@ add_executable(path_renderer
         src/integrators/pathMis.cpp
         src/integrators/distributed.cpp
         src/integrators/pathMats.cpp
-        )
+
+        src/textures/texture.h
+        src/textures/texture.cpp
+        src/textures/basicTextures.cpp 
+        src/textures/imageTexture.h 
+        src/textures/imageTexture.cpp
+        src/textures/mipmap.h "src/lights/pointLight.cpp" "src/lights/directionalLight.cpp")
 
 target_include_directories(path_renderer PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include

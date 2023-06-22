@@ -12,6 +12,8 @@
 #include <tbb/task.h>
 #include <Eigen/Core>
 #include <tinyformat/tinyformat.h>
+
+
 #include "utils/resolver.h"
 
 #define LUMINA_NAMESPACE_BEGIN namespace lumina {
@@ -19,6 +21,7 @@
 
 // Useful Constants
 #define Epsilon 1e-4f
+#define Infinity std::numeric_limits<float>::infinity()
 
 #undef M_PI
 
@@ -133,6 +136,48 @@ std::string toLower(const std::string &value);
 
 bool endsWith(const std::string &value, const std::string &ending);
 float fresnel(float cosThetaI, float extIOR, float intIOR);
+
+inline float gammaCorrect(float value) {
+    if (value <= 0.0031308f)
+        return 12.92f * value;
+    else
+        return 1.055f * std::pow(value, 1.0f/2.4f) - 0.055f;
+}
+
+inline float inverseGammaCorrect(float value) {
+    if (value <= 0.04045f)
+        return value * 1.0f / 12.92f;
+    else
+        return std::pow((value + 0.055f) * 1.0f / 1.055f, 2.4f);
+}
+
+inline float lerp(float t, float v1, float v2) { return (1 - t) * v1 + t * v2; }
+
+template <typename T>
+inline bool isPower2(T v) {
+    return v && !(v & (v - 1));
+}
+
+inline int32_t roundUpPow2(int32_t v) {
+    v--;
+    v |= v >> 1;
+    v |= v >> 2;
+    v |= v >> 4;
+    v |= v >> 8;
+    v |= v >> 16;
+    return v + 1;
+}
+
+inline int64_t roundUpPow2(int64_t v) {
+    v--;
+    v |= v >> 1;
+    v |= v >> 2;
+    v |= v >> 4;
+    v |= v >> 8;
+    v |= v >> 16;
+    v |= v >> 32;
+    return v + 1;
+}
 
 LUMINA_NAMESPACE_END
 

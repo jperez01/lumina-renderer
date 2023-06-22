@@ -57,4 +57,20 @@ protected:
     EmitterType m_type;
 };
 
+inline void convertToSolidAngle(EmitterQueryRecord& record) {
+    // Float pdf = DistanceSquared(ref.p, isectLight.p) /
+    //   (AbsDot(isectLight.n, -wi) * Area());
+
+    Vector3f oToP = record.p - record.refOrigin;
+    float distanceSquared = oToP.dot(oToP);
+    float cosTheta = abs(record.n.dot(-record.wi));
+
+    if (cosTheta == 0.0f) {
+        record.pdf = 0.0f;
+    }
+    else {
+        record.pdf = record.pdf * distanceSquared / cosTheta;
+    }
+}
+
 LUMINA_NAMESPACE_END

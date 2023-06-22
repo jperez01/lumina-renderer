@@ -22,6 +22,9 @@ struct BSDFQueryRecord {
     /// Relative refractive index in the sampled direction
     float eta;
 
+    /// Texture coordinates
+    Point2f uv;
+
     /// Measure associated with the sample
     EMeasure measure;
 
@@ -53,6 +56,7 @@ public:
      *         foreshortening factor associated with the outgoing direction,
      *         when this is appropriate. A zero value means that sampling
      *         failed.
+     *  aka returns cos(theta) * eval() / pdf()
      */
     virtual Color3f sample(BSDFQueryRecord& bRec, const Point2f& sample) const = 0;
 

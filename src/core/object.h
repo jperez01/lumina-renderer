@@ -23,12 +23,15 @@ public:
         EEmitter,
         ETest,
         EReconstructionFilter,
+        ETexture,
+        EFloatTexture, EColorTexture,
         EClassTypeCount
     };
 
     virtual ~LuminaObject() {}
 
     virtual EClassType getClassType() const = 0;
+    virtual EClassType getTemplatedClassType() const { return ETexture; }
 
     virtual void addChild(LuminaObject* child);
     virtual void setParent(LuminaObject* parent);
@@ -49,6 +52,7 @@ public:
             case ETest: return "test";
             case EEmitter: return "emitter";
             case EReconstructionFilter: return "reconstruction filter";
+            case ETexture: return "texture";
             case EClassTypeCount: return "class type count";
             default: return "<unknown>";
         }
@@ -81,6 +85,16 @@ LuminaObjectFactory::Constructor createConstructor() {
 #define LUMINA_REGISTER_CLASS(cls, name) \
     cls *cls ##_create(const PropertyList &list) { \
         return new cls(list); \
+    } \
+    static struct cls ##_{ \
+        cls ##_() { \
+            LuminaObjectFactory::registerClass(name, cls ##_create); \
+        } \
+    } cls ##__LUMINA_;
+
+#define LUMINA_TEMPLATED_REGISTER_CLASS(templatecls, cls, name) \
+    templatecls *cls ##_create(const PropertyList &list) { \
+        return new templatecls(list); \
     } \
     static struct cls ##_{ \
         cls ##_() { \

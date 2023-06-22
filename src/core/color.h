@@ -105,3 +105,13 @@ public:
         return tfm::format("[%f, %f, %f, %f]", coeff(0), coeff(1), coeff(2), coeff(3));
     }
 };
+
+inline Color3f lerp(float t, Color3f v1, Color3f v2) { return (1 - t) * v1 + t * v2; }
+
+inline Color3f clamp(Color3f& v, float min, float max) {
+    return Color3f(
+        std::clamp(v.x(), min, max),
+        std::clamp(v.y(), min, max),
+        std::clamp(v.z(), min, max)
+    );
+}

@@ -36,6 +36,7 @@ public:
             bool inShadow = scene->rayIntersect(shadowRay, shadowIts);
             if (!inShadow || shadowIts.mesh->getEmitter() == emitter) {
                 BSDFQueryRecord bsdfRecord(its.toLocal(emitterRecord.wi), its.toLocal(-ray.d), ESolidAngle);
+                bsdfRecord.uv = its.uv;
                 Color3f albedo = its.mesh->getBSDF()->eval(bsdfRecord);
 
                 directColor = albedo * emitterColor / (emitterRecord.pdf * lightPdf);
@@ -44,6 +45,7 @@ public:
             return directColor;
         } else {
             BSDFQueryRecord bsdfRecord(its.toLocal(-ray.d));
+            bsdfRecord.uv = its.uv;
             Color3f bsdfColor = bsdf->sample(bsdfRecord, sampler->next2D());
 
             if (sampler->next1D() < 0.95f) {

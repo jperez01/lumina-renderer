@@ -138,6 +138,21 @@ public:
     }
 };
 
+inline Vector3f reflect(Vector3f& wo, Normal3f& n) {
+    return -wo + 2 * wo.dot(n) * n;
+}
+inline Vector3f reflect(Vector3f& wo, Vector3f& n) {
+    return -wo + 2 * wo.dot(n) * n;
+}
+
+inline bool SameHemisphere(const Vector3f& w, const Vector3f& wp) {
+    return w.z() * wp.z() > 0;
+}
+
+inline bool SameHemisphere(const Vector3f& w, const Normal3f& wp) {
+    return w.z() * wp.z() > 0;
+}
+
 /// Complete the set {a} to an orthonormal base
 extern void coordinateSystem(const Vector3f &a, Vector3f &b, Vector3f &c);
 
